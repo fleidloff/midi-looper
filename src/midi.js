@@ -1,12 +1,16 @@
 import easymidi from "easymidi";
 
 export function bootstrap() {
-  // const inputs = easymidi.getInputs();
-  // console.log("inputs", inputs);
+  //const inputs = easymidi.getInputs();
+  //console.log("inputs", inputs);
 
-  const input = new easymidi.Input("USB Midi Cable:USB Midi Cable MIDI 1 20:0");
+  const input = new easymidi.Input(
+    "Circuit:Circuit MIDI 1 20:0"
+    //"USB Midi Cable:USB Midi Cable MIDI 1 20:0"
+  );
   const output = new easymidi.Output(
-    "USB Midi Cable:USB Midi Cable MIDI 1 20:0"
+    "Circuit:Circuit MIDI 1 20:0"
+    //"USB Midi Cable:USB Midi Cable MIDI 1 20:0"
   );
 
   const DELAY = 400;
@@ -26,4 +30,6 @@ export function bootstrap() {
   input.on("cc", function (msg) {
     console.log("cc", msg);
   });
+
+  output.send("cc", { channel: 1, controller: 87, value: 127 });
 }

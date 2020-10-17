@@ -20,7 +20,8 @@
   "homepage": "https://github.com/fleidloff/midi-looper#readme",
   "dependencies": {
     "blinkstick": "^1.2.0",
-    "easymidi": "^2.0.1"
+    "easymidi": "^2.0.1",
+    "microtime": "^3.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.5"
