@@ -1,0 +1,28 @@
+{
+  "name": "midi-looper",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fleidloff/midi-looper.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fleidloff/midi-looper/issues"
+  },
+  "homepage": "https://github.com/fleidloff/midi-looper#readme",
+  "dependencies": {
+    "blinkstick": "^1.2.0",
+    "easymidi": "^2.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.5"
+  }
+}
