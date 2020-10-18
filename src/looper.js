@@ -1,11 +1,14 @@
 export const states = {
+  INITIAL: "INITIAL",
   STOPPED: "STOPPED",
   RECORDING: "RECORDING",
   PLAYING: "PLAYING",
 };
 
 export function bootstrap({ time, blinkstick }) {
-  let state = states.STOPPED;
+  let state = null;
+  setState(states.INITIAL);
+
   let start = null;
   let end = null;
   let length = null;
@@ -22,27 +25,16 @@ export function bootstrap({ time, blinkstick }) {
   function setState(newState) {
     state = newState;
 
-    switch (newState) {
-      case states.STOPPED:
-        if (length) {
-          blinkstick.setColor("#000022");
-        } else {
-          blinkstick.setColor("#000000");
-        }
-        break;
-      case states.RECORDING:
-        blinkstick.setColor("#220000");
-        break;
-      case states.PLAYING:
-        blinkstick.setColor("#002200");
-        break;
-    }
+    blinkstick.setState(newState);
   }
 
   function recordPlay() {
     switch (state) {
+      case states.INITIAL:
+        start = time.now();
+        setState(states.RECORDING);
+        break;
       case states.STOPPED:
-        start = start || time.now();
         setState(states.RECORDING);
         break;
       case states.RECORDING:
@@ -56,6 +48,9 @@ export function bootstrap({ time, blinkstick }) {
   }
 
   function stop() {
+    if (state === states.INITIAL) {
+      return;
+    }
     endLoop();
     setState(states.STOPPED);
   }
