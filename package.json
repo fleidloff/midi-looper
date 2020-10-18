@@ -21,6 +21,7 @@
   "dependencies": {
     "blinkstick": "^1.2.0",
     "easymidi": "^2.0.1",
+    "keypress": "^0.2.1",
     "microtime": "^3.0.0"
   },
   "devDependencies": {

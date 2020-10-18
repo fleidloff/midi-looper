@@ -1,5 +1,11 @@
 import microtime from "microtime";
 
 export function bootstrap() {
-  console.log("now is", microtime.now());
+  function now() {
+    return microtime.now();
+  }
+
+  return {
+    now,
+  };
 }
