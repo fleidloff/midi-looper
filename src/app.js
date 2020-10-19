@@ -7,9 +7,9 @@ import { bootstrap as bootstrapLooper } from "./looper.js";
 export function run() {
   const blinkstick = bootstrapBlinkstick();
   const time = bootstrapTime();
-  const looper = bootstrapLooper({ time, blinkstick });
-  //bootstrapMidi();
-  bootstrapKeyboard({ callback: looper.handleKey });
+  const midi = null; //bootstrapMidi();
+  const keyboard = bootstrapKeyboard();
+  const looper = bootstrapLooper({ time, blinkstick, midi, keyboard });
 }
 
 export default run;

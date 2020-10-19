@@ -13,26 +13,23 @@ export function bootstrap() {
     //"USB Midi Cable:USB Midi Cable MIDI 1 20:0"
   );
 
-  // noteon { channel: 0, note: 48, velocity: 81, _type: 'noteon' }
-  // noteoff { channel: 0, note: 48, velocity: 0, _type: 'noteoff' }
-  const DELAY = 400;
-  input.on("noteon", function (msg) {
-    console.log("noteon", msg);
-    setTimeout(() => {
-      output.send("noteon", msg);
-    }, DELAY);
-  });
+  function send(msg) {
+    const { _type } = msg;
+    output.send(_type, msg);
+  }
 
-  input.on("noteoff", function (msg) {
-    setTimeout(() => {
-      console.log("noteoff", msg)
-      output.send("noteoff", msg);
-    }, DELAY);
-  });
+  function onMessage(messageHandler) {
+    input.on("noteon", function (msg) {
+      messageHandler(msg);
+    });
 
-  input.on("cc", function (msg) {
-    console.log("cc", msg);
-  });
+    input.on("noteoff", function (msg) {
+      messageHandler(msg);
+    });
+  }
 
-  output.send("cc", { channel: 1, controller: 87, value: 127 });
+  return {
+    send,
+    onMessage,
+  };
 }

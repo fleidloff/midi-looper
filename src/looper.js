@@ -5,7 +5,7 @@ export const states = {
   PLAYING: "PLAYING",
 };
 
-export function bootstrap({ time, blinkstick }) {
+export function bootstrap({ time, blinkstick, midi, keyboard }) {
   let state = null;
   setState(states.INITIAL);
 
@@ -35,7 +35,7 @@ export function bootstrap({ time, blinkstick }) {
         setState(states.RECORDING);
         break;
       case states.STOPPED:
-        setState(states.RECORDING);
+        setState(states.PLAYING);
         break;
       case states.RECORDING:
         endLoop();
@@ -48,14 +48,25 @@ export function bootstrap({ time, blinkstick }) {
   }
 
   function stop() {
-    if (state === states.INITIAL) {
-      return;
-    }
+    if (state === states.INITIAL) return;
     endLoop();
     setState(states.STOPPED);
   }
 
-  function handleKey(key) {
+  midi.onMessage((msg) => {
+    if (!state === states.RECORDING) return;
+
+    let when;
+    if (length) {
+      when = time.now() % length;
+    } else {
+      when = time.now() - start;
+    }
+
+    console.log("save message", msg);
+  });
+
+  keyboard.onKey((key) => {
     switch (key) {
       case "space":
         recordPlay();
@@ -64,9 +75,5 @@ export function bootstrap({ time, blinkstick }) {
         stop();
         break;
     }
-  }
-
-  return {
-    handleKey,
-  };
+  });
 }
