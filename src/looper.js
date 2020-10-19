@@ -93,7 +93,6 @@ export function bootstrap({ time, blinkstick, midi, keyboard }) {
 
   function stopLoop() {
     start = null;
-    current = messages.head();
   }
 
   midi.onMessage((msg) => {
@@ -106,8 +105,12 @@ export function bootstrap({ time, blinkstick, midi, keyboard }) {
       when = time.now() - start;
     }
 
-    console.log("insert after");
-    messages.insertAfter(current, { ...msg, when });
+    console.log("insert after", when, length);
+    if (current.item().when < when) {
+      messages.insertAfter(current, { ...msg, when });
+    } else {
+      messages.insertBefore(current, { ...msg, when });
+    }
     current = current.next();
   });
 
