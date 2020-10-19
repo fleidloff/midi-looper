@@ -1,3 +1,5 @@
+import { bootstrap as bootstrapLinkedList } from "./util/linkedList.js";
+
 export const states = {
   INITIAL: "INITIAL",
   STOPPED: "STOPPED",
@@ -10,15 +12,16 @@ export function bootstrap({ time, blinkstick, midi, keyboard }) {
   setState(states.INITIAL);
 
   let start = null;
-  let end = null;
   let length = null;
 
   function endLoop() {
-    if (end) {
+    if (length) {
       return;
     }
-    end = time.now();
+    const end = time.now();
     length = end - start;
+    current = messages.head();
+    handleStep();
     console.log("loop ended; length", length);
   }
 
@@ -31,10 +34,11 @@ export function bootstrap({ time, blinkstick, midi, keyboard }) {
   function recordPlay() {
     switch (state) {
       case states.INITIAL:
-        start = time.now();
+        runLoop();
         setState(states.RECORDING);
         break;
       case states.STOPPED:
+        runLoop();
         setState(states.PLAYING);
         break;
       case states.RECORDING:
@@ -50,11 +54,50 @@ export function bootstrap({ time, blinkstick, midi, keyboard }) {
   function stop() {
     if (state === states.INITIAL) return;
     endLoop();
+    stopLoop();
     setState(states.STOPPED);
   }
 
+  let messages = bootstrapLinkedList();
+  let current = null;
+
+  function runLoop() {
+    start = time.now();
+    current = messages.head();
+
+    handleStep();
+  }
+
+  function handleStep() {
+    if (state !== states.PLAYING && state !== states.RECORDING) return;
+    setTimeout(
+      () => {
+        midi.send(current.item());
+        current = current.next();
+        if (current) {
+          handleStep();
+        } else {
+          current = messages.head();
+          if (length) {
+            setTimeout(
+              () => handleStep(),
+              Math.max((length - (time.now() % length)) / 1000, 0)
+            );
+          }
+        }
+      },
+      Math.max((current.item().when - (time.now() % length)) / 1000),
+      0
+    );
+  }
+
+  function stopLoop() {
+    start = null;
+    current = messages.head();
+  }
+
   midi.onMessage((msg) => {
-    if (!state === states.RECORDING) return;
+    if (state !== states.RECORDING) return;
 
     let when;
     if (length) {
@@ -63,7 +106,9 @@ export function bootstrap({ time, blinkstick, midi, keyboard }) {
       when = time.now() - start;
     }
 
-    console.log("save message", msg);
+    console.log("insert after");
+    messages.insertAfter(current, { ...msg, when });
+    current = current.next();
   });
 
   keyboard.onKey((key) => {

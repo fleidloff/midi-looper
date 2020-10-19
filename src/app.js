@@ -7,8 +7,8 @@ import { bootstrap as bootstrapLooper } from "./looper.js";
 export function run() {
   const blinkstick = bootstrapBlinkstick();
   const time = bootstrapTime();
-  const midi = null; //bootstrapMidi();
-  const keyboard = bootstrapKeyboard();
+  const midi = bootstrapMidi();
+  const keyboard = bootstrapKeyboard({ blinkstick });
   const looper = bootstrapLooper({ time, blinkstick, midi, keyboard });
 }
 

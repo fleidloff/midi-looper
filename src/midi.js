@@ -15,6 +15,7 @@ export function bootstrap() {
 
   function send(msg) {
     const { _type } = msg;
+    if (_type === "HEAD") return;
     output.send(_type, msg);
   }
 
