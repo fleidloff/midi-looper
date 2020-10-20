@@ -34,12 +34,12 @@ export function bootstrap({ time, blinkstick, midi, keyboard }) {
   function recordPlay() {
     switch (state) {
       case states.INITIAL:
-        runLoop();
         setState(states.RECORDING);
+        runLoop();
         break;
       case states.STOPPED:
-        runLoop();
         setState(states.PLAYING);
+        runLoop();
         break;
       case states.RECORDING:
         endLoop();
@@ -100,7 +100,7 @@ export function bootstrap({ time, blinkstick, midi, keyboard }) {
 
     let when;
     if (length) {
-      when = time.now() % length;
+      when = (time.now() - start) % length;
     } else {
       when = time.now() - start;
     }
